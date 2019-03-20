@@ -2752,11 +2752,23 @@ func TestNestedStruct(t *testing.T) {
 				Foo: "123",
 				SliceEvenMoreNested: []EvenMoreNestedStruct{
 					EvenMoreNestedStruct{
+						Bar: "12345",
+					},
+					EvenMoreNestedStruct{
+						Bar: "12345",
+					},
+					EvenMoreNestedStruct{
+						Bar: "123456",
+					},
+					EvenMoreNestedStruct{
+						Bar: "12345",
+					},
+					EvenMoreNestedStruct{
 						Bar: "123456",
 					},
 				},
 			},
-		}, false, "Nested.SliceEvenMoreNested.0.Bar: 123456 does not validate as length(3|5)"},
+		}, false, "Nested.SliceEvenMoreNested.2.Bar: 123456 does not validate as length(3|5);Nested.SliceEvenMoreNested.4.Bar: 123456 does not validate as length(3|5)"},
 		{OuterStruct{
 			Nested: NestedStruct{
 				Foo: "123",
@@ -2837,6 +2849,28 @@ func TestNestedStructWithJsonTag(t *testing.T) {
 				},
 			},
 		}, false, "nested.sliceEvenMoreNested.0.bar: 123456 does not validate as length(3|5)"},
+		{OuterStruct{
+			Nested: NestedStruct{
+				Foo: "123",
+				SliceEvenMoreNested: []EvenMoreNestedStruct{
+					EvenMoreNestedStruct{
+						Bar: "12345",
+					},
+					EvenMoreNestedStruct{
+						Bar: "12345",
+					},
+					EvenMoreNestedStruct{
+						Bar: "123456",
+					},
+					EvenMoreNestedStruct{
+						Bar: "12345",
+					},
+					EvenMoreNestedStruct{
+						Bar: "123456",
+					},
+				},
+			},
+		}, false, "nested.sliceEvenMoreNested.2.bar: 123456 does not validate as length(3|5);nested.sliceEvenMoreNested.4.bar: 123456 does not validate as length(3|5)"},
 		{OuterStruct{
 			Nested: NestedStruct{
 				Foo: "123",

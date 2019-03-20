@@ -1162,24 +1162,32 @@ func typeCheck(v reflect.Value, t reflect.StructField, o reflect.Value, options 
 		return result, nil
 	case reflect.Slice, reflect.Array:
 		result := true
+		allErrors := make(Errors, 0)
 		for i := 0; i < v.Len(); i++ {
 			var resultItem bool
 			var err error
 			if v.Index(i).Kind() != reflect.Struct {
 				resultItem, err = typeCheck(v.Index(i), t, o, options)
 				if err != nil {
-					return false, err
+					err = PrependPathToErrors(err, getErrorNameFromReflectStructField(t)+"."+strconv.Itoa(i))
 				}
 			} else {
 				resultItem, err = ValidateStruct(v.Index(i).Interface())
 				if err != nil {
 					err = PrependPathToErrors(err, getErrorNameFromReflectStructField(t)+"."+strconv.Itoa(i))
-					return false, err
 				}
 			}
 			result = result && resultItem
+			if err != nil {
+				allErrors = append(allErrors, err)
+			}
 		}
-		return result, nil
+
+		if result == true {
+			return result, nil
+		} else {
+			return result, allErrors
+		}
 	case reflect.Interface:
 		// If the value is an interface then encode its element
 		if v.IsNil() {
